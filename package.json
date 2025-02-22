@@ -1,6 +1,6 @@
 {
   "name": "voice-typing-in-hebrew",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "log": "git log --pretty=format:\"[%h]%n%s\" | node scripts/format-log.js",
