@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "הקלדה קולית בעברית",
+  "version": "1.0",
+  "description": "תוסף להקלדה קולית בעברית בכל שדה טקסט",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"]
+  }],
+  "action": {
+    "default_popup": "popup.html"
+  }
+} 
