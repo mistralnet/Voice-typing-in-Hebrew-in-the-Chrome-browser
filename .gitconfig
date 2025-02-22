@@ -1,0 +1,5 @@
+[i18n]
+    logOutputEncoding = UTF-8
+    commitEncoding = UTF-8
+[format]
+    pretty = format:%h%n\u202B%s\u202C 

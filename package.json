@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "prestart": "node scripts/setup-rtl.js",
     "log": "git log --pretty=format:\"[%h]%n%s\" | node scripts/format-log.js",
     "build": "zip -r extension.zip . -x '*.git*'",
     "test": "echo \"Error: no test specified\" && exit 1",
