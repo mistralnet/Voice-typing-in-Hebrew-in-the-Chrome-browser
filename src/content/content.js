@@ -25,63 +25,51 @@ function hideRecordingIndicator() {
 }
 
 // פונקציה ליצירת אובייקט זיהוי דיבור
-function createSpeechRecognition() {
-    try {
-        if (!('webkitSpeechRecognition' in window)) {
-            throw new Error('הדפדפן אינו תומך בזיהוי דיבור');
-        }
-
-        recognition = new webkitSpeechRecognition();
-        recognition.lang = 'he-IL';
-        recognition.interimResults = false;
-
-        // הוספת אירועים להתחלת וסיום הקלטה
-        recognition.onstart = () => {
-            showRecordingIndicator();
-        };
-
-        recognition.onend = () => {
-            hideRecordingIndicator();
-        };
-
-        recognition.onerror = (event) => {
-            hideRecordingIndicator();
-            reportError('שגיאה בזיהוי דיבור', event.error);
-        };
-
-        // טיפול בתוצאות זיהוי הדיבור
-        recognition.onresult = (event) => {
-            try {
-                const transcript = event.results[0][0].transcript;
-                if (activeElement && activeElement.isContentEditable) {
-                    activeElement.textContent += transcript;
-                } else if (activeElement instanceof HTMLInputElement || 
-                          activeElement instanceof HTMLTextAreaElement) {
-                    activeElement.value += transcript;
-                }
-            } catch (error) {
-                reportError('שגיאה בעת עיבוד תוצאות הדיבור', error);
-            }
-        };
-
-    } catch (error) {
-        console.error('שגיאה ביצירת זיהוי דיבור:', error);
+const createSpeechRecognition = () => {
+    if (recognition) return recognition;
+    if (!('webkitSpeechRecognition' in window)) {
+        throw new Error('הדפדפן אינו תומך בזיהוי דיבור');
     }
-}
+
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = 'he-IL';
+    recognition.interimResults = false;
+
+    recognition.onstart = showRecordingIndicator;
+    recognition.onend = hideRecordingIndicator;
+    recognition.onerror = event => {
+        hideRecordingIndicator();
+        reportError('שגיאה בזיהוי דיבור', event.error);
+    };
+
+    recognition.onresult = event => {
+        try {
+            const transcript = event.results[0][0].transcript;
+            if (!activeElement) return;
+            
+            if (activeElement.isContentEditable) {
+                activeElement.textContent += transcript;
+            } else if (activeElement instanceof HTMLInputElement || 
+                      activeElement instanceof HTMLTextAreaElement) {
+                activeElement.value += transcript;
+            }
+        } catch (error) {
+            reportError('שגיאה בעת עיבוד תוצאות הדיבור', error);
+        }
+    };
+
+    return recognition;
+};
 
 // שמירת האלמנט הפעיל הנוכחי
 let activeElement = null;
 
 // האזנה לאירועי focus כדי לעקוב אחרי האלמנט הפעיל
-document.addEventListener('focus', (event) => {
-    try {
-        if (event.target.isContentEditable || 
-            event.target instanceof HTMLInputElement || 
-            event.target instanceof HTMLTextAreaElement) {
-            activeElement = event.target;
-        }
-    } catch (error) {
-        reportError('שגיאה בטיפול באירוע focus', error);
+document.addEventListener('focus', ({ target }) => {
+    if (target.isContentEditable || 
+        target instanceof HTMLInputElement || 
+        target instanceof HTMLTextAreaElement) {
+        activeElement = target;
     }
 }, true);
 

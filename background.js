@@ -1,23 +1,19 @@
-// מערך לשמירת לוג השגיאות
+// ניהול לוג שגיאות
+const MAX_LOGS = 100;
 let errorLogs = [];
 
-// פונקציה להוספת שגיאה ללוג
-function addErrorLog(error) {
-    const errorLog = {
+const addErrorLog = error => {
+    errorLogs.unshift({
         timestamp: new Date().toLocaleString('he-IL'),
         message: error.message || error,
         stack: error.stack || ''
-    };
-    errorLogs.push(errorLog);
-    // שמור מקסימום 100 שגיאות אחרונות
-    if (errorLogs.length > 100) {
-        errorLogs.shift();
-    }
-    // שמור את הלוג ב-storage
-    chrome.storage.local.set({ errorLogs: errorLogs });
-}
+    });
+    
+    errorLogs = errorLogs.slice(0, MAX_LOGS);
+    chrome.storage.local.set({ errorLogs });
+};
 
-// יצירת תפריט הקליק הימני
+// הגדרת תפריט הקליק הימני
 chrome.runtime.onInstalled.addListener(() => {
     try {
         chrome.contextMenus.create({

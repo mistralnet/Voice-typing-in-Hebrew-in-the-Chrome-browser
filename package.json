@@ -1,0 +1,17 @@
+{
+  "name": "voice-typing-in-hebrew",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "log": "git log --pretty=format:\"[%h]%n%s\" | node scripts/format-log.js",
+    "build": "zip -r extension.zip . -x '*.git*'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "web-ext run"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1"
+  },
+  "devDependencies": {
+    "web-ext": "^7.11.0"
+  }
+}
